@@ -5,14 +5,25 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if (MSVC)
-  add_compile_options(/W4)
-else()
-  add_compile_options(-Wall -Wextra -Wpedantic)
-endif()
+add_compile_options(-Wall -Wextra -Wpedantic)
 
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug)
+endif()
+
+add_compile_options(-O3 -ffunction-sections -fdata-sections)
+add_link_options(-Wl,--gc-sections)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+  add_link_options(-s)
+endif()
+
+include(CheckIPOSupported)
+check_ipo_supported(RESULT IPO_SUPPORTED OUTPUT IPO_ERROR)
+if (IPO_SUPPORTED)
+  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+else()
+  message(STATUS "IPO/LTO not supported: ${IPO_ERROR}")
 endif()
 
 find_package(LLVM REQUIRED CONFIG)
