@@ -1,11 +1,12 @@
 #include "lexer.h"
 #include "token.h"
 
+#include <iostream>
 #include <string>
 #include <utility>
 #include <vector>
 
-Lexer::Lexer(const std::string& source) : m_source(std::move(source)), m_pos(0), m_line(0) {}
+Lexer::Lexer(const std::string& source) : m_source(std::move(source)), m_pos(0), m_line(1) {}
 
 bool Lexer::isAtEnd() {
   return static_cast<size_t>(m_pos) >= m_source.length();
@@ -45,6 +46,7 @@ std::vector<Token> Lexer::tokenise() {
       case '\r':
         break;
       default:
+        std::cerr << "Unexpected character '" << c << "' at line " << m_line << "\n";
         break;
     }
   }
