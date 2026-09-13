@@ -25,6 +25,8 @@ add_subdirectory(src/lexer)
 add_subdirectory(src/parser)
 add_subdirectory(src/ast)
 add_subdirectory(src/codegen)
+add_subdirectory(src/cli)
+add_subdirectory(src/util)
 
 add_executable(duskc src/main.cpp)
 target_include_directories(duskc PRIVATE include)
@@ -33,4 +35,6 @@ target_link_libraries(duskc PRIVATE
   dusk_parser
   dusk_ast
   dusk_codegen
+  dusk_cli
+  dusk_util
 )
