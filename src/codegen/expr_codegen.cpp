@@ -1,8 +1,6 @@
 #include "dusk/codegen.h"
 #include "dusk/ast.h"
 
-#include <iostream>
-
 llvm::Value* CodeGenerator::genExpr(const Expr* expr) {
   if (auto call = dynamic_cast<const CallExpr*>(expr)) {
     return genCallExpr(call);
@@ -23,7 +21,9 @@ llvm::Value* CodeGenerator::genCallExpr(const CallExpr* call) {
     return m_builder.CreateCall(m_printfFunc, {fmt, strArg});
   }
 
-  std::cerr << "Unknown function: " << call->callee << "\n";
+  m_diagnostics.error("unknown function '" + call->callee + "'", call->line, call->column,
+                       static_cast<int>(call->callee.size()),
+                       "'" + call->callee + "' isn't declared anywhere - check for a typo");
   return nullptr;
 }
 

@@ -7,6 +7,9 @@
 // Expressions
 struct Expr {
   virtual ~Expr() = default;
+
+  int line = 0;
+  int column = 0;
 };
 
 struct StringLiteral : Expr {
@@ -21,6 +24,9 @@ struct CallExpr : Expr {
 // Statements
 struct Stmt {
   virtual ~Stmt() = default;
+
+  int line = 0;
+  int column = 0;
 };
 
 struct ExprStmt : Stmt {

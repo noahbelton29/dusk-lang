@@ -1,4 +1,5 @@
 #include "dusk/codegen.h"
+#include "dusk/diagnostics.h"
 #include "dusk/lexer.h"
 #include "dusk/token.h"
 #include "dusk/parser.h"
@@ -14,15 +15,16 @@
 void printToken(const Token& tok) {
   std::cerr << tokenTypeToString(tok.type)
     << " \"" << tok.lexeme << "\""
-    << " (line " << tok.line << ")\n";
+    << " (line " << tok.line << ", col " << tok.column << ")\n";
 }
 
 int main(int argc, char *argv[]) {
   CompilerOptions opts = parseArgs(argc, argv);
 
   std::string source = readFile(opts.inputPath);
+  DiagnosticEngine diagnostics(opts.inputPath, source);
 
-  Lexer lexer(source);
+  Lexer lexer(source, diagnostics);
   std::vector<Token> tokens = lexer.tokenise();
 
   if (opts.printTokens) {
@@ -31,18 +33,36 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  Parser parser(tokens);
+  if (diagnostics.hasErrors()) {
+    diagnostics.printAll();
+    diagnostics.printSummary();
+    return 1;
+  }
+
+  Parser parser(tokens, diagnostics);
   auto program = parser.parse();
 
   if (opts.printAST) {
     printAst(program);
   }
 
-  CodeGenerator codegen;
+  if (diagnostics.hasErrors()) {
+    diagnostics.printAll();
+    diagnostics.printSummary();
+    return 1;
+  }
+
+  CodeGenerator codegen(diagnostics);
   codegen.generate(program);
 
   if (opts.printIR) {
     codegen.dump();
+  }
+
+  if (diagnostics.hasErrors()) {
+    diagnostics.printAll();
+    diagnostics.printSummary();
+    return 1;
   }
 
   std::string objPath = opts.outputPath + ".o";
@@ -51,7 +71,7 @@ int main(int argc, char *argv[]) {
   std::string linkCmd = "cc " + objPath + " -o " + opts.outputPath;
   int result = system(linkCmd.c_str());
   if (result != 0) {
-    std::cerr << "Linking failed\n";
+    printFatalError("linking failed");
     return 1;
   }
 

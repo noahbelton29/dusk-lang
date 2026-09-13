@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ast.h"
+#include "diagnostics.h"
 
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
@@ -10,16 +11,19 @@
 
 class CodeGenerator {
   public:
-    CodeGenerator();
+    CodeGenerator(DiagnosticEngine& diagnostics);
 
     void generate(const std::vector<std::unique_ptr<Stmt>>& program);
     void dump();
     void emitObjectFile(const std::string& outputPath);
 
+    bool hasErrors() const;
+
   private:
     llvm::LLVMContext m_context;
     llvm::IRBuilder<> m_builder;
     std::unique_ptr<llvm::Module> m_module;
+    DiagnosticEngine& m_diagnostics;
 
     llvm::Function* m_printfFunc  = nullptr;
 

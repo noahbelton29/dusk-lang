@@ -5,9 +5,14 @@
 #include <llvm/Support/raw_ostream.h>
 #include <memory>
 
-CodeGenerator::CodeGenerator() : m_builder(m_context) {
+CodeGenerator::CodeGenerator(DiagnosticEngine& diagnostics)
+    : m_builder(m_context), m_diagnostics(diagnostics) {
   m_module = std::make_unique<llvm::Module>("dusk_module", m_context);
   declarePrintf();
+}
+
+bool CodeGenerator::hasErrors() const {
+  return m_diagnostics.hasErrors();
 }
 
 void CodeGenerator::declarePrintf() {

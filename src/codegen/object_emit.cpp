@@ -1,6 +1,6 @@
 #include "dusk/codegen.h"
 
-#include <iostream>
+#include "dusk/diagnostics.h"
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/Support/CodeGen.h>
 #include <llvm/Support/raw_ostream.h>
@@ -23,7 +23,7 @@ void CodeGenerator::emitObjectFile(const std::string& outputPath) {
   std::string error;
   const llvm::Target* target = llvm::TargetRegistry::lookupTarget(targetTriple, error);
   if (!target) {
-    std::cerr << "Failed to lookup target: " << error << "\n";
+    printFatalError("failed to look up compilation target: " + error);
     return;
   }
 
@@ -37,13 +37,13 @@ void CodeGenerator::emitObjectFile(const std::string& outputPath) {
   std::error_code ec;
   llvm::raw_fd_ostream dest(outputPath, ec, llvm::sys::fs::OF_None);
   if (ec) {
-    std::cerr << "Could not open output file: " << ec.message() << "\n";
+    printFatalError("could not open output file: " + ec.message());
     return;
   }
 
   llvm::legacy::PassManager pass;
   if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, llvm::CodeGenFileType::ObjectFile)) {
-    std::cerr << "TargetMachine can't emit object file\n";
+    printFatalError("target machine cannot emit an object file for this platform");
     return;
   }
 
