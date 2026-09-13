@@ -1,5 +1,7 @@
 #include "lexer.h"
 #include "token.h"
+#include "parser.h"
+#include "ast_printer.h"
 
 #include <iostream>
 #include <fstream>
@@ -37,6 +39,10 @@ int main(int argc, char *argv[]) {
   for (const Token& tok : tokens) {
     printToken(tok);
   }
+
+  Parser parser(tokens);
+  auto program = parser.parse();
+  printAst(program);
 
   return 0;
 }

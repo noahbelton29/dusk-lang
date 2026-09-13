@@ -96,6 +96,12 @@ std::vector<Token> Lexer::tokenise() {
       case ';':
         tokens.push_back(Token{TokenType::SEMICOLON, ";", m_line});
         break;
+      case ',':
+        tokens.push_back(Token{TokenType::COMMA, ",", m_line});
+        break;
+      case ':':
+        tokens.push_back(Token{TokenType::COLON, ":", m_line});
+        break;
       case '\n':
         m_line++;
         break;

@@ -13,6 +13,7 @@ enum class TokenType {
 
   // Punctuation / Symbols
   DOT,
+  COMMA,
   LPAREN,
   RPAREN,
   LBRACE,
@@ -54,6 +55,8 @@ inline std::string tokenTypeToString(TokenType type) {
       return "SEMICOLON";
     case TokenType::COLON:
       return "COLON";
+    case TokenType::COMMA:
+      return "COMMA";
     case TokenType::END_OF_FILE:
       return "END_OF_FILE";
     default:
