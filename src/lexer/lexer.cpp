@@ -1,5 +1,5 @@
-#include "lexer.h"
-#include "token.h"
+#include "dusk/lexer.h"
+#include "dusk/token.h"
 
 #include <cctype>
 #include <iostream>

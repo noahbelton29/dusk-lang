@@ -1,4 +1,4 @@
-#include "ast_printer.h"
+#include "dusk/ast_printer.h"
 
 #include <iostream>
 #include <format>

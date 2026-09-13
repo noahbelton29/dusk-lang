@@ -1,5 +1,5 @@
-#include "codegen.h"
-#include "ast.h"
+#include "dusk/codegen.h"
+#include "dusk/ast.h"
 
 #include <iostream>
 #include <llvm/IR/DerivedTypes.h>

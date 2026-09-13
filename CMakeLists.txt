@@ -21,14 +21,16 @@ include_directories(${LLVM_INCLUDE_DIRS})
 separate_arguments(LLVM_DEFINITIONS_LIST UNIX_COMMAND "${LLVM_DEFINITIONS}")
 add_definitions(${LLVM_DEFINITIONS_LIST})
 
-add_executable(duskc
-  src/main.cpp
-  src/lexer.cpp
-  src/parser.cpp
-  src/ast_printer.cpp
-  src/codegen.cpp
+add_subdirectory(src/lexer)
+add_subdirectory(src/parser)
+add_subdirectory(src/ast)
+add_subdirectory(src/codegen)
+
+add_executable(duskc src/main.cpp)
+target_include_directories(duskc PRIVATE include)
+target_link_libraries(duskc PRIVATE
+  dusk_lexer
+  dusk_parser
+  dusk_ast
+  dusk_codegen
 )
-
-target_include_directories(duskc PRIVATE src)
-
-target_link_libraries(duskc PRIVATE /usr/lib/libLLVM.so)

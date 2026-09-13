@@ -1,8 +1,7 @@
-#include "parser.h"
-#include "ast.h"
-#include "token.h"
+#include "dusk/parser.h"
+#include "dusk/ast.h"
+#include "dusk/token.h"
 
-#include <algorithm>
 #include <memory>
 #include <stdexcept>
 #include <string>
