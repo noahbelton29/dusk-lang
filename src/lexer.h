@@ -12,6 +12,10 @@ class Lexer {
     bool isAtEnd();
     char peek();
     char advance();
+    
+    Token scanString();
+    Token scanIdentifier(char first);
+
     std::vector<Token> tokenise();
 
   private:

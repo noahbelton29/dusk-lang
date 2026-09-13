@@ -1,8 +1,5 @@
-(
+use std.io;
 
-)
-
-  ()
-
-
-{}
+fn main(): void {
+  io.println("Hello, world!");
+}
