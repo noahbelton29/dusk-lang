@@ -7,12 +7,13 @@
 #include <vector>
 
 static const std::unordered_map<std::string, TokenType> keywords = {
-  {"use", TokenType::USE},
-  {"fn", TokenType::FN},
+    {"use", TokenType::USE},
+    {"fn", TokenType::FN},
 };
 
-Lexer::Lexer(const std::string& source, DiagnosticEngine& diagnostics)
-    : m_source(source), m_pos(0), m_line(1), m_column(1), m_diagnostics(diagnostics) {}
+Lexer::Lexer(const std::string &source, DiagnosticEngine &diagnostics)
+    : m_source(source), m_pos(0), m_line(1), m_column(1),
+      m_diagnostics(diagnostics) {}
 
 bool Lexer::isAtEnd() {
   return static_cast<size_t>(m_pos) >= m_source.length();
@@ -37,15 +38,15 @@ Token Lexer::scanString(int startLine, int startColumn) {
   while (peek() != '"' && !isAtEnd()) {
     if (peek() == '\n') {
       m_line++;
-      m_column = 0;  // advance() below brings this to 1
+      m_column = 0; // advance() below brings this to 1
     }
     value += advance();
   }
 
   if (isAtEnd()) {
     m_diagnostics.error("unterminated string literal", startLine, startColumn,
-                         static_cast<int>(value.size()) + 1,
-                         "add a closing '\"' to terminate the string");
+                        static_cast<int>(value.size()) + 1,
+                        "add a closing '\"' to terminate the string");
     return Token{TokenType::END_OF_FILE, "", startLine, startColumn};
   }
 
@@ -80,48 +81,50 @@ std::vector<Token> Lexer::tokenise() {
 
     // symbols & punctuation
     switch (c) {
-      case '(':
-        tokens.push_back(Token{TokenType::LPAREN, "(", startLine, startColumn});
-        break;
-      case '{':
-        tokens.push_back(Token{TokenType::LBRACE, "{", startLine, startColumn});
-        break;
-      case '}':
-        tokens.push_back(Token{TokenType::RBRACE, "}", startLine, startColumn});
-        break;
-      case ')':
-        tokens.push_back(Token{TokenType::RPAREN, ")", startLine, startColumn});
-        break;
-      case '.':
-        tokens.push_back(Token{TokenType::DOT, ".", startLine, startColumn});
-        break;
-      case '"':
-        tokens.push_back(scanString(startLine, startColumn));
-        break;
-      case ';':
-        tokens.push_back(Token{TokenType::SEMICOLON, ";", startLine, startColumn});
-        break;
-      case ',':
-        tokens.push_back(Token{TokenType::COMMA, ",", startLine, startColumn});
-        break;
-      case ':':
-        tokens.push_back(Token{TokenType::COLON, ":", startLine, startColumn});
-        break;
-      case '\n':
-        m_line++;
-        m_column = 1;
-        break;
-      case ' ':
-      case '\t':
-      case '\r':
-        // whitespace has no semantic meaning in this language
-        break;
-      default: {
-        std::string charStr(1, c);
-        m_diagnostics.error("unexpected character '" + charStr + "'", startLine, startColumn, 1,
-                             "remove this character or check for a typo");
-        break;
-      }
+    case '(':
+      tokens.push_back(Token{TokenType::LPAREN, "(", startLine, startColumn});
+      break;
+    case '{':
+      tokens.push_back(Token{TokenType::LBRACE, "{", startLine, startColumn});
+      break;
+    case '}':
+      tokens.push_back(Token{TokenType::RBRACE, "}", startLine, startColumn});
+      break;
+    case ')':
+      tokens.push_back(Token{TokenType::RPAREN, ")", startLine, startColumn});
+      break;
+    case '.':
+      tokens.push_back(Token{TokenType::DOT, ".", startLine, startColumn});
+      break;
+    case '"':
+      tokens.push_back(scanString(startLine, startColumn));
+      break;
+    case ';':
+      tokens.push_back(
+          Token{TokenType::SEMICOLON, ";", startLine, startColumn});
+      break;
+    case ',':
+      tokens.push_back(Token{TokenType::COMMA, ",", startLine, startColumn});
+      break;
+    case ':':
+      tokens.push_back(Token{TokenType::COLON, ":", startLine, startColumn});
+      break;
+    case '\n':
+      m_line++;
+      m_column = 1;
+      break;
+    case ' ':
+    case '\t':
+    case '\r':
+      // whitespace has no semantic meaning in this language
+      break;
+    default: {
+      std::string charStr(1, c);
+      m_diagnostics.error("unexpected character '" + charStr + "'", startLine,
+                          startColumn, 1,
+                          "remove this character or check for a typo");
+      break;
+    }
     }
   }
 

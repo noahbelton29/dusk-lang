@@ -5,20 +5,14 @@
 #include <utility>
 #include <vector>
 
-Parser::Parser(std::vector<Token> tokens, DiagnosticEngine& diagnostics)
+Parser::Parser(std::vector<Token> tokens, DiagnosticEngine &diagnostics)
     : m_tokens(std::move(tokens)), m_pos(0), m_diagnostics(diagnostics) {}
 
-bool Parser::isAtEnd() {
-  return peek().type == TokenType::END_OF_FILE;
-}
+bool Parser::isAtEnd() { return peek().type == TokenType::END_OF_FILE; }
 
-Token Parser::peek() {
-  return m_tokens[m_pos];
-}
+Token Parser::peek() { return m_tokens[m_pos]; }
 
-Token Parser::previous() {
-  return m_tokens[m_pos > 0 ? m_pos - 1 : 0];
-}
+Token Parser::previous() { return m_tokens[m_pos > 0 ? m_pos - 1 : 0]; }
 
 Token Parser::advance() {
   Token t = m_tokens[m_pos];
@@ -35,20 +29,24 @@ bool Parser::check(TokenType type) {
   return peek().type == type;
 }
 
-void Parser::errorAt(const Token& token, std::string message) {
-  int length = token.type == TokenType::END_OF_FILE ? 1 : static_cast<int>(token.lexeme.size());
+void Parser::errorAt(const Token &token, std::string message) {
+  int length = token.type == TokenType::END_OF_FILE
+                   ? 1
+                   : static_cast<int>(token.lexeme.size());
   std::string found = token.type == TokenType::END_OF_FILE
-                           ? "end of file"
-                           : "'" + token.lexeme + "'";
-  m_diagnostics.error(message, token.line, token.column, length > 0 ? length : 1,
-                       "found " + found);
+                          ? "end of file"
+                          : "'" + token.lexeme + "'";
+  m_diagnostics.error(message, token.line, token.column,
+                      length > 0 ? length : 1, "found " + found);
   throw ParseError{};
 }
 
-void Parser::errorAfter(const Token& token, std::string message) {
+void Parser::errorAfter(const Token &token, std::string message) {
   int column = token.column + static_cast<int>(token.lexeme.size());
   Token next = peek();
-  std::string found = next.type == TokenType::END_OF_FILE ? "end of file" : "'" + next.lexeme + "'";
+  std::string found = next.type == TokenType::END_OF_FILE
+                          ? "end of file"
+                          : "'" + next.lexeme + "'";
   m_diagnostics.error(message, token.line, column, 1, "found " + found);
   throw ParseError{};
 }
@@ -69,12 +67,12 @@ void Parser::synchronize() {
       return;
     }
     switch (peek().type) {
-      case TokenType::USE:
-      case TokenType::FN:
-      case TokenType::RBRACE:
-        return;
-      default:
-        advance();
+    case TokenType::USE:
+    case TokenType::FN:
+    case TokenType::RBRACE:
+      return;
+    default:
+      advance();
     }
   }
 }
@@ -84,7 +82,7 @@ std::vector<std::unique_ptr<Stmt>> Parser::parse() {
   while (!isAtEnd()) {
     try {
       stmts.push_back(parseStmt());
-    } catch (const ParseError&) {
+    } catch (const ParseError &) {
       synchronize();
     }
   }

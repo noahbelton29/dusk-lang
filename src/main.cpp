@@ -1,21 +1,20 @@
-#include "dusk/codegen.h"
-#include "dusk/diagnostics.h"
-#include "dusk/lexer.h"
-#include "dusk/token.h"
-#include "dusk/parser.h"
 #include "dusk/ast_printer.h"
+#include "dusk/codegen.h"
 #include "dusk/compiler_options.h"
+#include "dusk/diagnostics.h"
 #include "dusk/file_utils.h"
+#include "dusk/lexer.h"
+#include "dusk/parser.h"
+#include "dusk/token.h"
 
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
 
-void printToken(const Token& tok) {
-  std::cerr << tokenTypeToString(tok.type)
-    << " \"" << tok.lexeme << "\""
-    << " (line " << tok.line << ", col " << tok.column << ")\n";
+void printToken(const Token &tok) {
+  std::cerr << tokenTypeToString(tok.type) << " \"" << tok.lexeme << "\""
+            << " (line " << tok.line << ", col " << tok.column << ")\n";
 }
 
 int main(int argc, char *argv[]) {
@@ -28,7 +27,7 @@ int main(int argc, char *argv[]) {
   std::vector<Token> tokens = lexer.tokenise();
 
   if (opts.printTokens) {
-    for (const Token& tok : tokens) {
+    for (const Token &tok : tokens) {
       printToken(tok);
     }
   }

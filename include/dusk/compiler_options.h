@@ -11,4 +11,4 @@ struct CompilerOptions {
 };
 
 void printUsage();
-CompilerOptions parseArgs(int argc, char* argv[]);
+CompilerOptions parseArgs(int argc, char *argv[]);

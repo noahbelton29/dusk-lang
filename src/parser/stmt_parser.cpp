@@ -1,5 +1,5 @@
-#include "dusk/parser.h"
 #include "dusk/ast.h"
+#include "dusk/parser.h"
 #include "dusk/token.h"
 
 #include <memory>
@@ -23,7 +23,8 @@ std::unique_ptr<UseStmt> Parser::parseUseStmt() {
   std::string path = expect(TokenType::IDENT, "expected module name").lexeme;
   while (check(TokenType::DOT)) {
     advance();
-    path = path + "." + expect(TokenType::IDENT, "expected identifier after '.'").lexeme;
+    path = path + "." +
+           expect(TokenType::IDENT, "expected identifier after '.'").lexeme;
   }
 
   expect(TokenType::SEMICOLON, "expected ';' after use statement");
@@ -37,21 +38,23 @@ std::unique_ptr<UseStmt> Parser::parseUseStmt() {
 
 std::unique_ptr<FunctionDecl> Parser::parseFunctionDecl() {
   Token start = expect(TokenType::FN, "expected 'fn'");
-  std::string name = expect(TokenType::IDENT, "expected function name after 'fn'").lexeme;
+  std::string name =
+      expect(TokenType::IDENT, "expected function name after 'fn'").lexeme;
 
   expect(TokenType::LPAREN, "expected '(' after function name");
   // TODO: add parameter support
   expect(TokenType::RPAREN, "expected ')' after parameter list");
   expect(TokenType::COLON, "expected ':' before return type");
 
-  std::string returnType = expect(TokenType::IDENT, "expected return type").lexeme;
+  std::string returnType =
+      expect(TokenType::IDENT, "expected return type").lexeme;
 
   expect(TokenType::LBRACE, "expected '{' to start function body");
   std::vector<std::unique_ptr<Stmt>> body;
   while (!check(TokenType::RBRACE) && !isAtEnd()) {
     try {
       body.push_back(parseStmt());
-    } catch (const ParseError&) {
+    } catch (const ParseError &) {
       synchronize();
     }
   }

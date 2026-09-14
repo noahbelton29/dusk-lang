@@ -6,15 +6,15 @@
 
 void printUsage() {
   std::cerr << "Usage: duskc <file.dsk> [options]\n"
-             << "Options:\n"
-             << "  -o <name>       Set output executable name (default: out)\n"
-             << "  --tokens        Print lexer tokens\n"
-             << "  --ast           Print parsed AST\n"
-             << "  --ir            Print generated LLVM IR\n"
-             << "  --all           Print tokens, AST, and IR\n";
+            << "Options:\n"
+            << "  -o <name>       Set output executable name (default: out)\n"
+            << "  --tokens        Print lexer tokens\n"
+            << "  --ast           Print parsed AST\n"
+            << "  --ir            Print generated LLVM IR\n"
+            << "  --all           Print tokens, AST, and IR\n";
 }
 
-CompilerOptions parseArgs(int argc, char* argv[]) {
+CompilerOptions parseArgs(int argc, char *argv[]) {
   CompilerOptions opts;
 
   if (argc < 2) {

@@ -1,5 +1,5 @@
-#include "dusk/parser.h"
 #include "dusk/ast.h"
+#include "dusk/parser.h"
 #include "dusk/token.h"
 
 #include <memory>
@@ -18,10 +18,12 @@ std::unique_ptr<Expr> Parser::parseExpr() {
     return lit;
   }
 
-  std::string callee = expect(TokenType::IDENT, "expected an expression").lexeme;
+  std::string callee =
+      expect(TokenType::IDENT, "expected an expression").lexeme;
   while (check(TokenType::DOT)) {
     advance();
-    callee = callee + "." + expect(TokenType::IDENT, "expected identifier after '.'").lexeme;
+    callee = callee + "." +
+             expect(TokenType::IDENT, "expected identifier after '.'").lexeme;
   }
 
   expect(TokenType::LPAREN, "expected '(' after function name");

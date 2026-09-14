@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-std::string readFile(const std::string& path) {
+std::string readFile(const std::string &path) {
   std::ifstream file(path);
   if (!file) {
     printFatalError("could not open file '" + path + "'");

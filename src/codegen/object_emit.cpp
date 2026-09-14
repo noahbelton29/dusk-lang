@@ -2,18 +2,18 @@
 
 #include "dusk/diagnostics.h"
 #include <llvm/IR/LegacyPassManager.h>
+#include <llvm/MC/TargetRegistry.h>
 #include <llvm/Support/CodeGen.h>
-#include <llvm/Support/raw_ostream.h>
-#include <llvm/Support/TargetSelect.h>
 #include <llvm/Support/FileSystem.h>
-#include <llvm/TargetParser/Host.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Support/raw_ostream.h>
 #include <llvm/Target/TargetMachine.h>
 #include <llvm/Target/TargetOptions.h>
+#include <llvm/TargetParser/Host.h>
 #include <llvm/TargetParser/Triple.h>
-#include <llvm/MC/TargetRegistry.h>
 #include <string>
 
-void CodeGenerator::emitObjectFile(const std::string& outputPath) {
+void CodeGenerator::emitObjectFile(const std::string &outputPath) {
   llvm::InitializeNativeTarget();
   llvm::InitializeNativeTargetAsmPrinter();
 
@@ -21,7 +21,8 @@ void CodeGenerator::emitObjectFile(const std::string& outputPath) {
   m_module->setTargetTriple(targetTriple);
 
   std::string error;
-  const llvm::Target* target = llvm::TargetRegistry::lookupTarget(targetTriple, error);
+  const llvm::Target *target =
+      llvm::TargetRegistry::lookupTarget(targetTriple, error);
   if (!target) {
     printFatalError("failed to look up compilation target: " + error);
     return;
@@ -29,7 +30,7 @@ void CodeGenerator::emitObjectFile(const std::string& outputPath) {
 
   llvm::TargetOptions opts;
   auto relocModel = llvm::Reloc::PIC_;
-  llvm::TargetMachine* targetMachine = target->createTargetMachine(
+  llvm::TargetMachine *targetMachine = target->createTargetMachine(
       targetTriple, "generic", "", opts, relocModel);
 
   m_module->setDataLayout(targetMachine->createDataLayout());
@@ -42,8 +43,10 @@ void CodeGenerator::emitObjectFile(const std::string& outputPath) {
   }
 
   llvm::legacy::PassManager pass;
-  if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, llvm::CodeGenFileType::ObjectFile)) {
-    printFatalError("target machine cannot emit an object file for this platform");
+  if (targetMachine->addPassesToEmitFile(pass, dest, nullptr,
+                                         llvm::CodeGenFileType::ObjectFile)) {
+    printFatalError(
+        "target machine cannot emit an object file for this platform");
     return;
   }
 

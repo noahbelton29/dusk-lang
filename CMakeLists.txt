@@ -38,6 +38,7 @@ add_subdirectory(src/ast)
 add_subdirectory(src/codegen)
 add_subdirectory(src/cli)
 add_subdirectory(src/util)
+add_subdirectory(dusk-lsp)
 
 add_executable(duskc src/main.cpp)
 target_include_directories(duskc PRIVATE include)
